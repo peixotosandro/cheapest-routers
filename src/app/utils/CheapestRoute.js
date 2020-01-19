@@ -1,10 +1,11 @@
 /* eslint-disable no-console */
-import { readFileSync } from 'fs';
+import { readFileSync, appendFileSync } from 'fs';
 import parse from 'csv-parse/lib/sync';
 
 class CheapestRoute {
   loadPathsFromFile(pathsFile) {
     try {
+      this.pathsFile = pathsFile;
       this.pathsFromFile = parse(readFileSync(pathsFile), {
         columns: ['start', 'end', 'price'],
         skip_empty_lines: true,
@@ -24,6 +25,20 @@ class CheapestRoute {
     let price = 0;
 
     if (start === end) return cheapestRoute;
+
+    const startFilter = this.pathsFromFile.filter(path => {
+      return path.start === start;
+    });
+
+    const endFilter = this.pathsFromFile.filter(path => {
+      return path.end === end;
+    });
+
+    if (startFilter.length === 0 || endFilter.length === 0) {
+      return {
+        error: `There is no suggestion for the route ${start}-${end}`,
+      };
+    }
 
     this.getPathsBetweenStartAndEnd(
       this.pathsFromFile,
@@ -46,9 +61,9 @@ class CheapestRoute {
       });
 
       if (!cheapestRoute.price) {
-        cheapestRoute = { success: true, route, price };
+        cheapestRoute = { route, price };
       } else if (cheapestRoute.price > price) {
-        cheapestRoute = { success: true, route, price };
+        cheapestRoute = { route, price };
       }
       route = [];
       price = 0;
@@ -104,6 +119,36 @@ class CheapestRoute {
     });
 
     return result;
+  }
+
+  addNewRoute(start, end, price) {
+    const filter = this.pathsFromFile.filter(path => {
+      return path.start === start;
+    });
+
+    let alreadyAdded = false;
+    filter.forEach(path => {
+      if (path.end === end) {
+        alreadyAdded = true;
+      }
+    });
+
+    if (alreadyAdded) {
+      return {
+        error: `Route already added '${start},${end},${price}'`,
+      };
+    }
+
+    try {
+      appendFileSync(this.pathsFile, `\r\n${start},${end},${price}`, 'utf8');
+      this.pathsFromFile.push({ start, end, price });
+    } catch (e) {
+      return {
+        error: `Error while trying to add the new route '${start},${end},${price}' ${e}`,
+      };
+    }
+
+    return { start, end, price };
   }
 }
 

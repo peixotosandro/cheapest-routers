@@ -7,7 +7,7 @@
   "scripts": {
     "start": "sucrase-node src/server.js",
     "dev": "nodemon src/server.js --ignore __tests__",
-    "test": "SET \"NODE_ENV=test\" && jest --runInBand --verbose"
+    "test": "jest --runInBand --verbose"
   },
   "jest": {
     "transform": {
