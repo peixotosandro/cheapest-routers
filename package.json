@@ -6,6 +6,7 @@
   "license": "MIT",
   "scripts": {
     "start": "sucrase-node src/server.js",
+    "start-interface": "sucrase-node src/cheapest-routes.js",
     "dev": "nodemon src/server.js --ignore __tests__",
     "test": "jest --runInBand --verbose"
   },
@@ -19,6 +20,7 @@
     "csv-parse": "^4.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "request": "^2.88.0",
     "yup": "^0.28.0"
   },
   "devDependencies": {
