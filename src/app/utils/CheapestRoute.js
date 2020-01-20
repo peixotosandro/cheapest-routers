@@ -20,7 +20,9 @@ class CheapestRoute {
     this.bestPrice = 0;
     const actualPaths = [];
     const result = [];
-    let cheapestRoute = {};
+    let cheapestRoute = {
+      error: `There is no suggestion for the route ${start}-${end}`,
+    };
     let route = [];
     let price = 0;
 
@@ -35,9 +37,7 @@ class CheapestRoute {
     });
 
     if (startFilter.length === 0 || endFilter.length === 0) {
-      return {
-        error: `There is no suggestion for the route ${start}-${end}`,
-      };
+      return cheapestRoute;
     }
 
     this.getPathsBetweenStartAndEnd(
