@@ -28,7 +28,7 @@ ou
 $ npm test
 ```
 
-## Para executar a API REST##
+## Para executar a API REST ##
 Execute o comando no diretório raiz da aplicação:
 
 ```shell
